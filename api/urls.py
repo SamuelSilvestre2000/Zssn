@@ -10,3 +10,5 @@ urlpatterns = [
     path('items/', ItemList.as_view(), name='item_list'),
 
 ]
+
+

@@ -6,6 +6,45 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 
+# api/views.py
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from .models import Survivor, Item, Inventory
+#from .serializers import SurvivorSerializer
+from .utils import create_survivor_with_items
+
+
+""" @api_view(['POST'])
+def create_survivor(request):
+    if request.method == 'POST':
+        data = request.data
+
+        item_data = [(item['name'], item['points'], item['quantity']) for item in data['items']]
+
+        survivor = create_survivor_with_items(data['name'], data['age'], data['gender'], data['last_location_latitude'], data['last_location_longitude'], item_data)
+        serializer = SurvivorSerializer(survivor)
+        return JsonResponse(serializer.data, status=201)
+ """
+
+@api_view(['POST'])
+def create_survivor(request):
+    survivor_data = {
+        "name": request.data["name"],
+        "age": request.data["age"],
+        "gender": request.data["gender"],
+        "last_location_latitude": request.data["last_location_latitude"],
+        "last_location_longitude": request.data["last_location_longitude"],
+        "infected": False,
+    }
+
+    items_data = request.data.get("items", [])
+
+    new_survivor = create_survivor_with_items(survivor_data=survivor_data, items_data=items_data)
+    serializer = SurvivorSerializer(new_survivor)
+
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class SurvivorList(generics.ListCreateAPIView):
     queryset = Survivor.objects.all()
     serializer_class = SurvivorSerializer
