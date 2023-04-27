@@ -75,28 +75,7 @@ class TradeItems(generics.GenericAPIView):
         for item in items:
             total_value += item_values[item["name"]] * item["quantity"]
         return total_value
-        
 
-    """def can_trade(self, trader, items):
-        #trader_inventory = trader.inventory
-        trader_inventory = trader.item_set.all()
-        for item in items:
-            item_name = item["name"]
-            required_quantity = item["quantity"]
-            if trader_inventory[item_name] < required_quantity:
-                return False
-        return True"""
-    
-    """def can_trade(self, trader, items):
-        trader_items = trader.item_set.all()
-        trader_inventory = {item.name: item.quantity for item in trader_items}
-
-        for item in items:
-            item_name = item["name"]
-            required_quantity = item["quantity"]
-            if trader_inventory.get(item_name, 0) < required_quantity:
-                return False
-        return True"""
     def can_trade(self, trader, items):
         # Acessando o inventário do sobrevivente
         trader_inventory = trader.inventory.all()
@@ -113,30 +92,7 @@ class TradeItems(generics.GenericAPIView):
 
         return True
 
-
-
-    """def perform_trade(self, trader1, trader2, items1, items2):
-        trader1_inventory = trader1.inventory
-        trader2_inventory = trader2.inventory
-
-        for item in items1:
-            item_name = item["name"]
-            quantity = item["quantity"]
-            trader1_inventory[item_name] -= quantity
-            trader2_inventory[item_name] += quantity
-
-        for item in items2:
-            item_name = item["name"]
-            quantity = item["quantity"]
-            trader2_inventory[item_name] -= quantity
-            trader1_inventory[item_name] += quantity
-
-        trader1.inventory = trader1_inventory
-        trader2.inventory = trader2_inventory
-
-        trader1.save()
-        trader2.save()"""
-    """def perform_trade(self, trader1, trader2, items1, items2):
+    def perform_trade(self, trader1, trader2, items1, items2):
         trader1_items = trader1.item_set.all()
         trader2_items = trader2.item_set.all()
         trader1_inventory = {item.name: item for item in trader1_items}
@@ -158,46 +114,16 @@ class TradeItems(generics.GenericAPIView):
             item.save()
 
         for item in trader2_items:
-            item.save()"""
+            item.save()
 
-    def perform_trade(self, trader1, trader1_items, trader2, trader2_items):
-        # Acessando o inventário dos sobreviventes
-        trader1_inventory = trader1.inventory.all()
-        trader2_inventory = trader2.inventory.all()
+class ItemList(generics.ListAPIView):
+    serializer_class = ItemSerializer
 
-        # Criando um dicionário para mapear o inventário dos sobreviventes
-        trader1_inventory_dict = {inventory_item.item_id: inventory_item for inventory_item in trader1_inventory}
-        trader2_inventory_dict = {inventory_item.item_id: inventory_item for inventory_item in trader2_inventory}
-
-        # Realizando a troca de itens entre os sobreviventes
-        with transaction.atomic():
-            for item_id, quantity in trader1_items.items():
-                # Removendo itens do sobrevivente 1
-                trader1_inventory_item = trader1_inventory_dict[item_id]
-                trader1_inventory_item.quantity -= quantity
-                trader1_inventory_item.save()
-
-                # Adicionando itens ao sobrevivente 2
-                trader2_inventory_item = trader2_inventory_dict.get(item_id)
-                if trader2_inventory_item:
-                    trader2_inventory_item.quantity += quantity
-                    trader2_inventory_item.save()
-                else:
-                    Inventory.objects.create(survivor=trader2, item_id=item_id, quantity=quantity)
-
-            for item_id, quantity in trader2_items.items():
-                # Removendo itens do sobrevivente 2
-                trader2_inventory_item = trader2_inventory_dict[item_id]
-                trader2_inventory_item.quantity -= quantity
-                trader2_inventory_item.save()
-
-                # Adicionando itens ao sobrevivente 1
-                trader1_inventory_item = trader1_inventory_dict.get(item_id)
-                if trader1_inventory_item:
-                    trader1_inventory_item.quantity += quantity
-                    trader1_inventory_item.save()
-                else:
-                    Inventory.objects.create(survivor=trader1, item_id=item_id, quantity=quantity)
-
+    def get_queryset(self):
+        queryset = Item.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
 
 

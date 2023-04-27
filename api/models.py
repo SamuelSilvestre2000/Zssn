@@ -35,22 +35,6 @@ class SurvivorInventory(models.Model):
     def __str__(self):
         return f"{self.survivor.name} - {self.item.name} - {self.quantity}"
 
-""" class Inventory(models.Model):
-    survivor = models.ForeignKey(Survivor, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.survivor.name} - {self.item.name}" """
-
-""" class Inventory(models.Model):
-    survivor = models.ForeignKey(Survivor, on_delete=models.CASCADE, related_name='inventory')
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='inventory')
-    quantity = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.survivor.name} - {self.item.name}" """
-
 class Inventory(models.Model):
     survivor = models.ForeignKey(Survivor, on_delete=models.CASCADE, related_name='survivor_inventory')
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='item_inventory')
