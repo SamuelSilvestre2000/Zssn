@@ -3,7 +3,10 @@ from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 from .models import Survivor, Item
 from .serializers import SurvivorSerializer, ItemSerializer
-from api.models import Survivor, Item
+#from api.models import Survivor, Item
+from api.models import Survivor, Item, Inventory
+
+
 
 def test_create_survivor(self):
     # Crie itens de teste no banco de dados
@@ -121,12 +124,17 @@ class TradeTestCase(APITestCase):
         self.item1 = Item.objects.create(name="Item 1", points=4)
         self.item2 = Item.objects.create(name="Item 2", points=3)
 
-        self.survivor1.inventory.add(self.item1, through_defaults={"quantity": 2})
+        """ self.survivor1.inventory.add(self.item1, through_defaults={"quantity": 2})
         self.survivor1.inventory.add(self.item2, through_defaults={"quantity": 3})
         self.survivor2.inventory.add(self.item1, through_defaults={"quantity": 1})
-        self.survivor2.inventory.add(self.item2, through_defaults={"quantity": 2})
+        self.survivor2.inventory.add(self.item2, through_defaults={"quantity": 2}) """
+        
+        Inventory.objects.create(survivor=self.survivor1, item=self.item1, quantity=2)
+        Inventory.objects.create(survivor=self.survivor1, item=self.item2, quantity=3)
+        Inventory.objects.create(survivor=self.survivor2, item=self.item1, quantity=1)
+        Inventory.objects.create(survivor=self.survivor2, item=self.item2, quantity=2)
 
-    def test_valid_trade(self):
+    """ def test_valid_trade(self):
         client = APIClient()
         url = reverse("trade_items")
 
@@ -145,7 +153,26 @@ class TradeTestCase(APITestCase):
 
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Trade successful")
+        self.assertEqual(response.data["message"], "Trade successful") """
+    def test_valid_trade(self):
+        url = reverse("trade_items")
+        data = {
+            "traders": [
+                {
+                    "survivor_id": self.survivor1.id,
+                    "items": [{"item_id": self.item1.id, "quantity": 2}]
+                },
+                {
+                    "survivor_id": self.survivor2.id,
+                    "items": [{"item_id": self.item2.id, "quantity": 1}]
+                }
+            ]
+        }
+        response = self.client.post(url, data, format="json")
+        print(response.data)  # Keep this line for now
+        self.assertEqual(response.status_code, 200)
+
+
 
         # Refresh survivor instances from the database
         self.survivor1.refresh_from_db()

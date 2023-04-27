@@ -1,7 +1,7 @@
 from django.db import models
 
 class Item(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     points = models.PositiveIntegerField()
     #quantity = models.PositiveIntegerField()
 
@@ -35,13 +35,20 @@ class SurvivorInventory(models.Model):
     def __str__(self):
         return f"{self.survivor.name} - {self.item.name} - {self.quantity}"
 
-class Inventory(models.Model):
+""" class Inventory(models.Model):
     survivor = models.ForeignKey(Survivor, on_delete=models.CASCADE, related_name='survivor_inventory')
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='item_inventory')
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.survivor.name} - {self.item.name}"
+        return f"{self.survivor.name} - {self.item.name}" """ 
+class Inventory(models.Model):
+    survivor = models.ForeignKey("Survivor", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ("survivor", "item")
     
 def create_survivor_with_items(name, age, gender, last_location_latitude, last_location_longitude, item_data):
     # Crie um sobrevivente
@@ -58,18 +65,3 @@ def create_survivor_with_items(name, age, gender, last_location_latitude, last_l
         inventory.save()
 
     return survivor
-
-
-""" def create_survivor_with_items(name, age, gender, last_location_latitude, last_location_longitude, item_quantities):
-    # Crie um sobrevivente
-    survivor = Survivor(name=name, age=age, gender=gender, last_location_latitude=last_location_latitude, last_location_longitude=last_location_longitude)
-    survivor.save()
-
-    # Associe itens ao sobrevivente
-    for item, quantity in item_quantities.items():
-        # Crie um registro de inventário
-        inventory = Inventory(survivor=survivor, item=item, quantity=quantity)
-        inventory.save()
-
-    return survivor """
-
