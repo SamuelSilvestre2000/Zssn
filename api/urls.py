@@ -8,6 +8,7 @@ urlpatterns = [
     path('survivors/<int:pk>/', SurvivorDetail.as_view(), name='survivor_detail'),
     path('survivors/trade/', TradeItems.as_view(), name='trade_items'),
     path('items/', ItemList.as_view(), name='item_list'),
+    path('survivors/trade/', views.trade, name='trade'),
 
 ]
 

@@ -6,12 +6,16 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 
-# api/views.py
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .models import Survivor, Item, Inventory
 #from .serializers import SurvivorSerializer
 from .utils import create_survivor_with_items
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .trade import trade_items
+import json
 
 
 """ @api_view(['POST'])
@@ -164,5 +168,33 @@ class ItemList(generics.ListAPIView):
         if name is not None:
             queryset = queryset.filter(name__icontains=name)
         return queryset
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .trade import trade_items
+import json
+
+
+@csrf_exempt
+def trade(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        survivor1_id = data.get('survivor1_id')
+        survivor1_items = data.get('survivor1_items')
+        survivor2_id = data.get('survivor2_id')
+        survivor2_items = data.get('survivor2_items')
+
+        if not survivor1_id or not survivor1_items or not survivor2_id or not survivor2_items:
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+
+        success = trade_items(survivor1_id, survivor1_items, survivor2_id, survivor2_items)
+
+        if success:
+            return JsonResponse({'message': 'Trade successful'}, status=200)
+        else:
+            return JsonResponse({'error': 'Trade not successful'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
