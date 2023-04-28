@@ -1,8 +1,7 @@
 # Documentação do Projeto Zombie Survival Social Network (ZSSN)
 
 ## Introdução
-O Zombie Survival Social Network (ZSSN) é um projeto de sistema de inventário de sobreviventes em um apocalipse zumbi. O projeto foi desenvolvido em Django, um framework web de alto nível em Python, e utiliza um banco de dados SQLite3. O sistema consiste em três modelos: Sobrevivente, Item e Registro de Troca, que estão relacionados entre si.  
-https://samuelsilvestre2000.github.io/Zssn/
+O Zombie Survival Social Network (ZSSN) é um projeto de sistema de inventário de sobreviventes em um apocalipse zumbi. O projeto foi desenvolvido em Django, um framework web de alto nível em Python, e utiliza um banco de dados SQLite3. O sistema consiste em três modelos: Sobrevivente, Item e Registro de Troca, que estão relacionados entre si.
 
 ## Funcionalidades
 As funcionalidades do ZSSN são divididas em dois grupos: sobreviventes e itens.
@@ -17,12 +16,11 @@ Os itens podem ser criados e atualizados. Os tipos de itens incluem água, comid
 Os sobreviventes podem trocar itens entre si. O sistema registra a troca e verifica se ambas as partes estão de acordo com a troca.
 
 ## Endpoints
-Os endpoints do ZSSN estão listados abaixo. Todos os endpoints retornam JSON.  
-Exemplo: __POST /api/survivors/create__  = http://127.0.0.1:8000/api/survivors/create/
+Os endpoints do ZSSN estão listados abaixo. Todos os endpoints retornam JSON.
 
 ### Sobreviventes
 * __GET /api/survivors/__ - Retorna uma lista de todos os sobreviventes cadastrados no sistema.  
-* __POST /api/survivors/create__ - Cria um novo sobrevivente. As informações do sobrevivente e do inventário devem ser fornecidas no corpo da solicitação.  
+* __POST /api/survivors/__ - Cria um novo sobrevivente. As informações do sobrevivente e do inventário devem ser fornecidas no corpo da solicitação.  
 * __GET /api/survivors/{id}/__ - Retorna informações sobre um sobrevivente específico.  
 * __PATCH /api/survivors/{id}/__ - Atualiza as informações de um sobrevivente específico. As informações a serem atualizadas devem ser fornecidas no corpo da solicitação.  
 * __POST /api/survivors/{id}/report_infection/__ - Marca um sobrevivente como infectado.  
@@ -49,3 +47,10 @@ JavaScript
 6. Crie um superusuário: `python manage.py createsuperuser`  
 7. Inicie o servidor: `python manage.py runserver`  
 8. Acesse o sistema em http://localhost:8000/  
+## Limitações  
+O projeto ZSSN tem algumas limitações que podem ser endereçadas em trabalhos futuros:
+* Listagem de sobreviventes não concluída (Provável erro no arquivo scripts.js)  
+* Trade não funciona em algums situações (Provável erro na valoração)  
+* Autenticação de usuários: Atualmente qualquer usuário pode cadastrar sobreviventes e realizar transações de itens sem a necessidade de autenticação. Em trabalhos futuros, seria interessante implementar uma autenticação de usuários para garantir maior segurança e controle de acesso às funcionalidades da API.  
+* Validação de dados: A API atualmente não realiza uma validação mais robusta dos dados enviados pelo usuário nos formulários, o que pode levar a problemas como dados incorretos ou maliciosos. Em trabalhos futuros, seria interessante implementar uma validação mais completa dos dados enviados pelos usuários.  
+* Front-end mais elaborado: A interface web atualmente é bem simples e pode ser melhorada em termos de design e usabilidade.
