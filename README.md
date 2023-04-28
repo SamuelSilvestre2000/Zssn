@@ -2,7 +2,7 @@
 
 ## Introdução
 O Zombie Survival Social Network (ZSSN) é um projeto de sistema de inventário de sobreviventes em um apocalipse zumbi. O projeto foi desenvolvido em Django, um framework web de alto nível em Python, e utiliza um banco de dados SQLite3. O sistema consiste em três modelos: Sobrevivente, Item e Registro de Troca, que estão relacionados entre si.  
-https://samuelsilvestre2000.github.io/Zssn/
+Link de deploy: https://samuelsilvestre2000.github.io/Zssn/
 
 ## Funcionalidades
 As funcionalidades do ZSSN são divididas em dois grupos: sobreviventes e itens.
